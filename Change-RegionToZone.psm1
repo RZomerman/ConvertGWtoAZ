@@ -90,13 +90,10 @@ Function PublicIPAddress ([array]$PublicIPAddresses, [string]$LogFile, [string]$
             $Description = "  -Creating new Public IP"
             writelog "Deploying new Public IP address with correct information"  -LogFile $LogFile
             Write-host $Command
-    #DEVCHECK
             RunLog-Command -Description $Description -Command $Command -LogFile $LogFile -Color "Green"
         }
     }
-    write-host "check me"
-    write-host $NewPublicIPs.Count
-    write-host "end"
+ 
     return $NewPublicIPs
 }
 
