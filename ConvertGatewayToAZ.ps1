@@ -135,7 +135,7 @@ If (!($GWObject)) {
         exit
 }else{
     #Exporting the GW object to a JSON file - 
-    $Command = {ConvertTo-Json -InputObject $GWObject -Depth 100 | Out-File -FilePath $workfolder'\'$ResourceGroupName-$Name'-Object.json'}
+    $Command = {ConvertTo-Json -InputObject $GWObject -Depth 100 | Out-File -FilePath $workfolder'\'$ResourceGroup-$Name'-Object.json'}
     RunLog-Command -Description $Description -Command $Command -LogFile $LogFile -Color "Green"
 
      #Exporting JSON template for the GW - This allows the GW to be easily re-deployed back to original state in case something goes wrong
@@ -169,7 +169,7 @@ If (!($GWObject)) {
             #Exporting configuration of Public IP address
             [string]$ExportFile=($workfolder + '\' + $IPObject.ResourceGroupName  + '-' + $IpAddressConfig.Name + '.json')
             $Description = "  -Exporting the Public IP JSON Deployment file: $ExportFile "
-            $Command = {Export-AzResourceGroup -ResourceGroupName $ResourceGroupName -Resource $IpAddressConfig.id -IncludeParameterDefaultValue -IncludeComments -Force -Path $ExportFile }
+            $Command = {Export-AzResourceGroup -ResourceGroupName $ResourceGroup -Resource $IpAddressConfig.id -IncludeParameterDefaultValue -IncludeComments -Force -Path $ExportFile }
             RunLog-Command -Description $Description -Command $Command -LogFile $LogFile -Color "Green"
 
             $Command=""
@@ -295,10 +295,12 @@ If (!($GWObject)) {
     Foreach ($connection in $AllConnections){
         #Exporting JSON template for the Connection - This allows the GW to be easily re-deployed back to original state in case something goes wrong
                 #if so, please run new-AzResourceGroupDeployment -Name <deploymentName> -ResourceGroup <ResourceGroup> -TemplateFile .\<filename>
-                [string]$ExportFile=($workfolder + '\' + $connection.ResourceGroupName + '-' + $connection.name + '.json')
-                $Description = "  -Exporting the Connection JSON Deployment file: $ExportFile "
-                $Command = {Export-AzResourceGroup -ResourceGroupName $ResourceGroupName -Resource $connection.id -IncludeParameterDefaultValue -IncludeComments -Force -Path $ExportFile }
+                [string]$ConExportFile=($workfolder + '\' + $connection.ResourceGroupName + '-' + $connection.name + '.json')
+                $Description = "  -Exporting the Connection JSON Deployment file: $ConExportFile "
+                write-host ("Exporting " + $connection.id)
+                $Command = {Export-AzResourceGroup -ResourceGroupName $ResourceGroup -Resource $connection.id -IncludeParameterDefaultValue -IncludeComments -Force -Path $ConExportFile }
                 RunLog-Command -Description $Description -Command $Command -LogFile $LogFile -Color "Green"
+                write-host ("Exported " + $connection.id)
         $Description = ("  -Deleting connection " + $connection.name)
         If ($Production) {
             $Command = {Remove-AzVirtualNetworkGatewayConnection -Name $connection.name -ResourceGroupName $connection.ResourceGroupName -Force}
