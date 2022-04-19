@@ -295,7 +295,7 @@ If (!($GWObject)) {
     Foreach ($connection in $AllConnections){
         #Exporting JSON template for the Connection - This allows the GW to be easily re-deployed back to original state in case something goes wrong
                 #if so, please run new-AzResourceGroupDeployment -Name <deploymentName> -ResourceGroup <ResourceGroup> -TemplateFile .\<filename>
-                [string]$ExportFile=($workfolder + '\' + $ResourceGroupName + '-' + $connection.name + '.json')
+                [string]$ExportFile=($workfolder + '\' + $connection.ResourceGroupName + '-' + $connection.name + '.json')
                 $Description = "  -Exporting the Connection JSON Deployment file: $ExportFile "
                 $Command = {Export-AzResourceGroup -ResourceGroupName $ResourceGroupName -Resource $connection.id -IncludeParameterDefaultValue -IncludeComments -Force -Path $ExportFile }
                 RunLog-Command -Description $Description -Command $Command -LogFile $LogFile -Color "Green"
@@ -330,7 +330,7 @@ If (!($GWObject)) {
     Foreach ($connection in $AllConnections){
         #build the export file again and use those for import
         #forestroot-NEU-DXB.json
-        $ImportFile=($workfolder + '\' + $ResourceGroupName + '-' + $connection.name + '.json')
+        $ImportFile=($workfolder + '\' + $ResourceGroup + '-' + $connection.name + '.json')
         $Description = ("  -Restoring connection:" + $connection.name)
         $command={new-AzResourceGroupDeployment -Name $connection.name -ResourceGroupName $ResourceGroup -TemplateFile $ImportFile -Mode Incremental}
         RunLog-Command -Description $Description -Command $Command -LogFile $LogFile -Color "Green"
